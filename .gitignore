@@ -218,3 +218,7 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Project datasets: keep only small sample data in version control.
+data/raw/
+data/large/
