@@ -219,6 +219,8 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 
-# Project datasets: keep only small sample data in version control.
-data/raw/
-data/large/
+# Generated figures
+*.png
+
+# Keep the pipeline audit log under version control
+!data/processed/iot_telemetry_audit.log

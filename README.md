@@ -15,34 +15,43 @@ The planned workflow loads sensor readings, cleans and summarizes them, and expo
 
 ```text
 .
-|-- README.md
-|-- .gitignore
-|-- requirements.txt
-|-- data/                  # Small sample datasets only
+|-- README.md                          # Project documentation & execution guide
+|-- requirements.txt                   # Dependencies (numpy, pandas, matplotlib, seaborn, plotly)
+|-- run_pipeline.py                    # Standalone CLI entry point
+|-- data/
+|   |-- raw/
+|   |   `-- air_quality_iot_raw.csv    # Raw, uncleaned input dataset
+|   `-- processed/
+|       |-- air_quality_iot_clean.csv  # Curated, validated clean dataset
+|       `-- iot_telemetry_audit.log    # Audit report of filtered/rejected records
 |-- src/
-|   |-- ingestion/         # Data loading and validation
-|   |-- analysis/          # Cleaning, statistics, and anomaly detection
-|   `-- visualization/     # Plotly charts and dashboard export
-|-- reports/
-|   `-- iot_dashboard.html # Placeholder for the generated dashboard
-`-- docs/
-    `-- architecture.md   # Design notes and diagrams
+|   |-- __init__.py
+|   |-- ingestion.py                   # Defensive reader, range auditor & CSV exporter
+|   |-- analyzer.py                    # IoTSensorAnalyzer class (NumPy / Pandas)
+|   `-- visualizer.py                  # Matplotlib, Seaborn & Plotly outputs
+|-- notebooks/
+|   `-- development_cycle.ipynb        # EDA, trials, tests & unit assertions
+`-- reports/
+    |-- figures/                       # Generated PNGs (git-ignored)
+    |   |-- primary_envelope.png
+    |   |-- correlation_heatmap.png
+    |   `-- distribution_regimes.png
+    |-- interactive_dashboard.html     # Interactive Plotly dashboard
+    `-- Project Report PDF
 ```
 
 ## How to run
 
-From the project root, create a virtual environment and install the starter dependencies:
+From the project root, create a virtual environment and install dependencies:
 
 ```powershell
 python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe run_pipeline.py
 ```
 
-Open `reports/iot_dashboard.html` in a browser to view the placeholder.
-The data pipeline and dashboard generator are not implemented yet.
-TODO: Add the pipeline command when the implementation is ready.
+Then open `reports/interactive_dashboard.html` in a browser.
 
-## Data policy
+## Notes
 
-Commit only small, non-sensitive sample datasets under `data/`.
-Keep large or raw datasets outside the repository, or in the ignored `data/raw/` and `data/large/` folders.
+- Generated figures (`*.png`) are not committed; run the pipeline to regenerate them in `reports/figures/`.
