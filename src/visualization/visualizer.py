@@ -6,7 +6,6 @@ import seaborn as sns
 
 
 class IoTTelemetryVisualizer:
-    """Create the required Phase 1 telemetry visualisations."""
 
     SENSOR_COLUMNS = ["co", "humidity", "lpg", "smoke", "temp"]
 
