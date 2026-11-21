@@ -1,11 +1,12 @@
 import csv
 import os
 from datetime import datetime
+import math
 
 
 class TelemetryIngestor:
 
-    def __init__(self, input_file, output, clean_name="air_quality_iot_clean.csv", log_name="iot_telemetry_audit.log"):
+    def __init__(self, input_file, output, clean_name="iot_telemetry_data.csv", log_name="iot_telemetry_audit.log"):
 
         self.input_file = input_file
         self.output = output
@@ -28,11 +29,25 @@ class TelemetryIngestor:
         
         reason = None
         try:
+            if None in row:
+                raise ValueError("extra fields")
             temp = float(row["temp"])
             humidity = float(row["humidity"])
             co = float(row["co"])
             lpg = float(row["lpg"])
             smoke = float(row["smoke"])
+            ts = float(row["ts"])
+
+            for value in [ts, temp, humidity, co, lpg, smoke]:
+                if math.isnan(value) or math.isinf(value):
+                    raise ValueError("not a finite number")
+
+            if row["device"] is None or row["device"].strip() == "":
+                raise ValueError("blank device")
+
+            for name in ["light", "motion"]:
+                if str(row[name]).strip().lower() not in ["true", "false"]:
+                    raise ValueError("light/motion must be true or false")
 
             if temp < self.min_temp or temp > self.max_temp:
                 reason = "Temp out of range"
@@ -59,6 +74,9 @@ class TelemetryIngestor:
         with open(self.input_file, newline="") as f:
             reader = csv.DictReader(f)
             self.header = reader.fieldnames
+
+            if self.header is None:
+                raise ValueError("Input file is empty or has no header row")
 
             for row in reader:
                 self.total = self.total + 1
@@ -113,4 +131,4 @@ class TelemetryIngestor:
 
 
 if __name__ == "__main__":
-    TelemetryIngestor("data/raw/air_quality_iot_raw.csv", "data/processed").run()
+    TelemetryIngestor("iot_telemetry_data.csv", "data/processed").run()
