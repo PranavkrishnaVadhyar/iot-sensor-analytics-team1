@@ -1,4 +1,3 @@
-# Starter dependencies; review and pin versions as implementation progresses.
 pandas
 numpy
 plotly
