@@ -10,10 +10,10 @@ ZSCORE = ["co", "temp", "humidity"]
 
 
 class IoTSensorAnalyzer:
-    #holds the data collected from IoT sensors and provides methods to analyze it.  
-
+    '''holds the data collected from IoT sensors and provides methods to analyze it.  
+    '''
     def __init__(self):
-        #create an empty telemetary book
+        '''create an empty telemetary bookk'''
         self.__raw_data=None
         self.__is_loaded=False
 
