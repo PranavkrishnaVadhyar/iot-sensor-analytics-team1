@@ -9,6 +9,14 @@ REQUIRED =["ts", "device", *SENSOR, *EVENT]
 ZSCORE = ["co", "temp", "humidity"]
 
 
+def minmax_scale(values:np.ndarray) -> np.ndarray:
+    """Scale the input values to the range [0, 1] using min-max scaling."""
+    minimum = np.min(values)
+    maximum = np.max(values)
+    if maximum ==minimum:
+        raise ValueError("Cannot scale a constant aarray: minimum equals maximumm ")
+    return (values - minimum) / (maximum - minimum)
+
 class IoTSensorAnalyzer:
     '''holds the data collected from IoT sensors and provides methods to analyze it.  
     '''
@@ -129,3 +137,32 @@ class IoTSensorAnalyzer:
                     lambda x: f"{x}_percentage"
                 )
             )
+    def minmax_scale_channel(self,column:str) ->np.ndarray:
+        """ rturns the selceted sensor readeings scaled to [0, 1] """
+        self.__require_loaded()
+
+        if column not in SENSOR:
+            raise ValueError(
+                f"Unknown sensor {column!r}. Valid choices: {', '.join(SENSOR)}."
+            )
+
+        arr = self.__raw_data[column].to_numpy(dtype=float)
+        return minmax_scale(arr)
+    def describe_array(self, column: str) -> dict:
+        """return the shape, memory size, dtype, and flags of a sensor array."""
+        self.__require_loaded()
+
+        if column not in SENSOR:
+            raise ValueError(
+                f"Unknown sensor {column!r}. Valid choices: {', '.join(SENSOR)}."
+            )
+
+        arr = self.__raw_data[column].to_numpy(dtype=float)
+        return {
+            "shape": arr.shape,
+            "nbytes": arr.nbytes,
+            "dtype": str(arr.dtype),
+            "C_CONTIGUOUS": arr.flags["C_CONTIGUOUS"],
+            "F_CONTIGUOUS": arr.flags["F_CONTIGUOUS"],
+            "OWNDATA": arr.flags["OWNDATA"],
+        }
