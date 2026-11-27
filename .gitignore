@@ -222,3 +222,5 @@ __marimo__/
 # Project datasets: keep only small sample data in version control.
 data/raw/
 data/large/
+
+/reports/interactive_dashboard.html
